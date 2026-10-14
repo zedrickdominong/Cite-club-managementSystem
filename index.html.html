@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NVSU CITE Club Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f7f3;--card:#fff;--ink:#12301d;--mute:#4f6657;--line:#d3e0d6;--pri:#0b6b3a;--onpri:#fff;--acc:#f2b705;--onacc:#2a2000;--bad:#c0392b;--ok:#0b6b3a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1a12;--card:#14271b;--ink:#e8f3ec;--mute:#9bb5a5;--line:#25402e;--pri:#5fcf8d;--onpri:#062514;--bad:#ff8a7a;--ok:#5fcf8d}}
+:root[data-theme="dark"]{--bg:#0c1a12;--card:#14271b;--ink:#e8f3ec;--mute:#9bb5a5;--line:#25402e;--pri:#5fcf8d;--onpri:#062514;--bad:#ff8a7a;--ok:#5fcf8d}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 'DM Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque','DM Sans',system-ui,sans-serif;line-height:1.15;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.btn{background:var(--pri);color:var(--onpri);border:0;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.acc{background:var(--acc);color:var(--onacc)}
+.btn.bad{background:transparent;color:var(--bad);border:1.5px solid var(--bad)}
+.btn.sm{padding:5px 11px;font-size:14px}
+label{display:block;font-size:14px;font-weight:700;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--card)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin-top:8px}
+.site{background:var(--card);border-bottom:1px solid var(--line)}
+.site .in{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.logo{font:800 20px 'Bricolage Grotesque',sans-serif;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:12px;line-height:1.1}
+.logo i{font-style:normal;background:var(--pri);color:var(--onpri);border-radius:50%;width:48px;height:48px;display:grid;place-items:center;font-size:13px;border:3px solid var(--acc)}
+.logo small{display:block;font:500 12px 'DM Sans',sans-serif;color:var(--mute);margin-top:3px}
+.wid{display:flex;gap:24px;flex-wrap:wrap;font-size:13px}
+.wid div{line-height:1.35}.wid b{display:block;font-size:12px;color:var(--mute)}
+.wid a{color:var(--ink);text-decoration:none}.wid a:hover{text-decoration:underline}
+.snav{background:#0b6b3a;position:relative;z-index:30}
+.snav .in{padding:0 20px;justify-content:flex-start;gap:0}
+.snav ul{list-style:none;margin:0;padding:0}
+.snav>.in>ul{display:flex;flex-wrap:wrap}
+.t{position:relative}
+.t>button,#mm{background:transparent;border:0;color:#fff;padding:13px 13px;font-weight:700;cursor:pointer;font-size:15px}
+.t>button:hover,.t:focus-within>button{background:#073f23}
+#mm{display:none}
+.snav ul ul{display:none;position:absolute;left:0;top:100%;min-width:260px;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--acc);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.snav ul ul ul{left:100%;top:-3px}
+.snav li{position:relative}
+.snav ul ul a{display:block;padding:9px 14px;color:var(--ink);text-decoration:none;font-size:14px}
+.snav ul ul a:hover,.snav ul ul a:focus-visible{background:var(--bg);color:var(--pri)}
+.t:hover>ul,.t:focus-within>ul,.t.on>ul,.snav ul ul li:hover>ul,.snav ul ul li:focus-within>ul{display:block}
+.t:nth-last-child(-n+3) ul ul{left:auto;right:100%}
+@media(max-width:900px){#mm{display:block}.snav .in>ul{display:none;flex-direction:column;width:100%}.snav.open .in>ul{display:flex}.snav ul ul,.snav ul ul ul{position:static;box-shadow:none;border:0;border-left:3px solid var(--acc);margin-left:12px;min-width:0}.t:hover>ul,.t:focus-within>ul{display:none}.t.on>ul{display:block}.snav ul ul ul{display:block}.t>button{width:100%;text-align:left}.t:nth-last-child(-n+3) ul ul{right:auto}}
+/* auth */
+.auth{min-height:70vh;display:grid;grid-template-columns:1fr 1fr}
+.hero{background:linear-gradient(160deg,#0b6b3a,#073f23);color:#fff;border-right:8px solid var(--acc);padding:48px;display:flex;flex-direction:column;justify-content:space-between}
+.hero h1{font-size:clamp(34px,5vw,60px);font-weight:800}
+.hero p{max-width:34ch;opacity:.9}
+.hero .tag{display:inline-block;background:var(--acc);color:var(--onacc);font-weight:700;padding:4px 10px;border-radius:6px;font-size:14px}
+.formwrap{display:flex;align-items:center;justify-content:center;padding:32px}
+.form{width:100%;max-width:420px}
+.form h2{font-size:28px;margin-bottom:4px}
+.tabs{display:flex;gap:6px;margin:18px 0 6px}
+.tabs button{flex:1;padding:9px;border:1.5px solid var(--line);background:transparent;border-radius:8px;font-weight:700;cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{font-size:13px;color:var(--mute);margin-top:14px}
+/* app */
+header.top{display:flex;align-items:center;gap:14px;padding:12px 24px;background:var(--card);border-bottom:4px solid var(--acc);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;flex-wrap:wrap}
+.brand{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px}
+.brand b{background:var(--acc);color:var(--onacc);padding:1px 7px;border-radius:5px;margin-right:6px}
+header.top nav{display:flex;gap:4px;flex:1;justify-content:center;align-items:center;overflow-x:auto}
+header.top nav button{background:transparent;border:0;padding:9px 14px;border-radius:8px;font-weight:700;cursor:pointer;color:var(--mute);white-space:nowrap;line-height:1.2}
+header.top nav button[aria-current=page]{background:var(--bg);color:var(--ink);box-shadow:inset 0 -3px 0 var(--acc)}
+.who{font-size:14px;color:var(--mute);text-align:right}
+main{max-width:1000px;margin:0 auto;padding:28px 20px 60px}
+main>h2{font-size:30px;margin-bottom:4px}.sub{color:var(--mute);margin:0 0 20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat b{font:800 30px 'Bricolage Grotesque',sans-serif;display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.card h3{font-size:19px}.card p{margin:0;color:var(--mute);font-size:15px;flex:1}
+.meta{font-size:13px;color:var(--mute)}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;border:1.5px solid var(--line)}
+.pill.ok{color:var(--ok);border-color:var(--ok)}.pill.wait{color:var(--onacc);background:var(--acc);border-color:var(--acc)}
+.bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}.bar input,.bar select{width:auto;flex:1;min-width:160px}
+.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:13px;color:var(--mute)}tr:last-child td{border-bottom:0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:20px}
+.empty{padding:28px;text-align:center;color:var(--mute);border:1.5px dashed var(--line);border-radius:10px}
+.foot{background:#073f23;color:#fff;text-align:center;padding:18px 16px;font-size:14px}.foot a{color:#f2b705}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:8px;z-index:20}
+@media(max-width:760px){.auth{grid-template-columns:1fr}.hero{padding:28px;gap:20px;border-right:0;border-bottom:8px solid var(--acc)}.who{text-align:left}header.top nav{order:3;flex-basis:100%;justify-content:flex-start}}
+@media(prefers-reduced-motion:no-preference){.toast{animation:in .2s}@keyframes in{from{opacity:0;transform:translate(-50%,8px)}}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const K='cite_cms_v1',S='cite_cms_session';
+const COURSES=['BSIT','BSCS','BSIS','BLIS'];
+const $=s=>document.querySelector(s);
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+let mem={};
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return mem[k]??null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){mem[k]=v}};
+const lsDel=k=>{try{localStorage.removeItem(k)}catch(e){delete mem[k]}};
+async function hash(p){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('cite:'+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa(p)}}
+let db;
+async function load(){
+  try{db=JSON.parse(lsGet(K))}catch(e){}
+  if(!db||!db.users){
+    db={users:[{id:'u0',sid:'ADMIN-001',name:'CITE Administrator',email:'admin@cite.edu',course:'Faculty',year:'-',role:'admin',pw:await hash('admin123')}],
+    clubs:[
+      {id:'c1',name:"Programmers' Guild",desc:'Weekly coding sessions, hackathons and competitive programming practice.',adviser:'Prof. Reyes'},
+      {id:'c2',name:'Cyber Defenders',desc:'Capture-the-flag teams, security workshops and ethical hacking talks.',adviser:'Prof. Santos'},
+      {id:'c3',name:'Web & Design Society',desc:'UI/UX, front-end builds and portfolio reviews for creative developers.',adviser:'Prof. Dela Cruz'},
+      {id:'c4',name:'Robotics & IoT Circle',desc:'Arduino, sensors and smart-campus prototypes built by students.',adviser:'Prof. Bautista'}],
+    members:[],
+    events:[{id:'e1',cid:'c1',title:'Intra-CITE Hackathon',date:'2026-11-14',place:'CITE Computer Lab 2',rsvp:[]},
+            {id:'e2',cid:'c2',title:'Intro to Capture the Flag',date:'2026-11-05',place:'Room 305',rsvp:[]}]};
+    save();
+  }
+}
+const save=()=>lsSet(K,JSON.stringify(db));
+let me=null,view='auth',tab='home',mode='login',q='',cf='',msg='';
+const toast=t=>{const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)};
+const club=id=>db.clubs.find(c=>c.id===id);
+const user=id=>db.users.find(u=>u.id===id);
+const mem_=(u,c)=>db.members.find(m=>m.uid===u&&m.cid===c);
+const count=c=>db.members.filter(m=>m.cid===c&&m.status==='approved').length;
+const fmt=d=>new Date(d+'T00:00').toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+
+function render(){
+  const app=$('#app');
+  if(!me){app.innerHTML=siteHeader()+authView();bindSite();bindAuth();return}
+  const adm=me.role==='admin';
+  const tabs=adm?[['home','Overview'],['clubs','Clubs'],['members','Members'],['events','Events']]:[['home','Dashboard'],['clubs','Browse clubs'],['mine','My clubs'],['events','Events'],['profile','Profile']];
+  app.innerHTML=siteHeader()+`<header class="top"><div class="brand"><b>NVSU</b>CITE Clubs</div>
+  <nav aria-label="Main">${tabs.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="page"':''}>${l}</button>`).join('')}</nav>
+  <div class="who">${esc(me.name)}<br>${adm?'Administrator':esc(me.course+' '+me.year)}</div>
+  <button class="btn alt sm" id="out">Log out</button></header><main>${page()}</main><footer class="foot">Nueva Vizcaya State University · Quezon St., Bayombong, Nueva Vizcaya</footer>`;
+  app.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=b.dataset.t;q='';cf='';render()});
+  $('#out').onclick=()=>{lsDel(S);me=null;mode='login';msg='';render()};
+  bindSite();bindPage();
+}
+const B='https://www.nvsu.edu.ph/';
+const u=p=>p?(/^https?:/.test(p)?p:B+p):'#';
+const D='https://drive.google.com/file/d/';
+const MENU=[
+['About',[['VMGCV, History, NVSU Hymn','about/'],['University Seal','about/seal'],['Quality Policy','about/quality-policy'],['Job Opportunities','',[['Teaching','about/job-teaching'],['Non-Teaching','about/job-non-teaching'],['JO/COS','about/job-jo-cos']]],['Directory of Officials','about/officials'],['Organizational Structure','about/org-structure'],["Citizen's Charter",D+'1H2NUhU9Sm7-6snMfbxp27hWiXrp8L2zG/view?usp=drive_link'],['Privacy Notice','about/privacy-notice'],['Dashboard','dashboard'],['FAQs','',[['Student Affairs & Services (SAS)','about/frequently-asked-questions-sas'],['NVSU College Admission Test (NCAT)','about/frequently-asked-questions-ncat']]]]],
+['Academics',[['Programs','',[['Bayombong','academics/degree-programs-bay'],['Bambang','academics/degree-programs-bam']]],['Colleges','academics/colleges'],['Services','',[['Student Affairs and Services','academics/sas',[['Scholarship Center','academics/scholarship'],['Guidance and Counseling','academics/guidance-counseling']]],['University Educational Testing Center (UETC)','academics/uetc'],['National Service Training Program','academics/nstp'],['Sports Development Office','academics/sports-development'],['Culture and the Arts','academics/culture-and-the-arts',[['Speech Lab','academics/speech-lab'],['Museo Vizcaino','academics/museo-vizcaino'],['TAN-AWAN 2024','https://new.express.adobe.com/webpage/5q7i0FZXGPOgC']]],['Center for Distance Education','academics/center-for-distance-education']]],['University Library','https://library.nvsu.edu.ph/'],['Academic Calendar',D+'140YWyN3bfEsiE8hLDibQr4Ou__SAMvvw/view?usp=drive_link']]],
+['Research',[['Research & Development Program','research/program'],['Externally Funded Project','research/externally-funded-project'],['Institutional Research Projects','research/institutional-funded-project'],['Linkages','research/linkages'],['Research Journal','research/journal'],['IP Inventory','',[['Patents','research/patents'],['Utility Models','research/utility-models'],['Industrial Design','research/industrial-design'],['Trademarks','research/trademarks']]]]],
+['Extension',[['Extension & Training Program','extension/program'],['Externally Funded Project','extension/externally-funded-project'],['Institutional Research Projects','extension/institutional-funded-project'],['Linkages','extension/linkages']]],
+['Administration',[['Board of Regents','administration/bor'],['Administrative Division','',[['Human Resource Management Office','administration/hrmo'],['Records Office','administration/records-office'],['Safety and Security Office','administration/security-office']]],['Finance Division','',[['Accounting Office','administration/accounting-office'],['Budget Office','administration/budget-office'],['Cashier Office','administration/cashier-office']]],['Transparency Seal','administration/transparency-seal'],['Bids & Awards','administration/bids']]],
+['Student',[['Enrollment','',[['Requirements','enrollment/requirements'],['NCAT','https://ncat.nvsu.edu.ph/'],['Procedure','enrollment/procedure'],['SIAS','https://sias.nvsu.edu.ph/']]],['Campus Life','',[['Registrar','campus-life/registrar'],['Medical','campus-life/medical-clinic'],['Management Information Office','campus-life/mis']]],['Student Publications','',[['Varsity Courier (Bayombong Campus)','student-publications/varsity-courier/folio'],['The University Gazette (Bambang Campus)','student-publications/university-gazette/folio']]]]],
+['Internationalization',[['About','internationalization/about'],['Travel Request','internationalization/travel-request'],['International Affairs Coordinators','internationalization/coordinators'],['Partner Institutions','internationalization/partner-institutions']]],
+['GAD',[['About','']]],
+['Information',[['News','news-events'],['University Memo','information/university-memo'],['Advisory',''],['Feature',''],['External References','',[['CSC','information/csc'],['GSIS','information/gsis'],['PAGIBIG','information/pag-ibig']]],['HRMIS User Guide','',[['PDS',D+'1n-VsmxghM6PQlUZpVRI4LgMYE219dDWr/view?usp=sharing'],['CS Form 6',D+'1PfT1hBEVA6WzMP5LfhwQFks_VFvjuuJu/view?usp=sharing']]]]],
+['Downloads',[['Forms','downloads/forms'],['Annual Reports','downloads/annual-reports'],['Newsletters','downloads/newsletters'],['Magazines',''],['Infographics','downloads/infographics'],['Others','downloads/others']]]];
+const mi=i=>`<li><a href="${u(i[1])}" ${i[1]?'target="_blank" rel="noopener"':''}>${esc(i[0])}${i[2]?' \u25B8':''}</a>${i[2]?`<ul>${i[2].map(mi).join('')}</ul>`:''}</li>`;
+function siteHeader(){
+  return `<div class="site"><div class="in"><a class="logo" href="${B}" target="_blank" rel="noopener"><i>NVSU</i><span>Nueva Vizcaya State University</span></a>
+  <div class="wid"><div><b>Email Us</b><a href="mailto:dominongzedrick@gmail.com">dominongzedrick@gmail.com</a></div></div></div>
+  <nav class="snav" hidden aria-label="NVSU website"><div class="in"><button id="mm" aria-expanded="false">\u2630 Menu</button><ul>${MENU.map(([l,it])=>`<li class="t"><button aria-expanded="false">${l} \u25BE</button><ul>${it.map(mi).join('')}</ul></li>`).join('')}</ul></div></nav></div>`;
+}
+function bindSite(){
+  const n=$('.snav');
+  $('#mm').onclick=e=>{n.classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',n.classList.contains('open'))};
+  document.querySelectorAll('.t>button').forEach(b=>b.onclick=()=>{const t=b.parentElement,o=t.classList.contains('on');document.querySelectorAll('.t.on').forEach(x=>x.classList.remove('on'));t.classList.toggle('on',!o);b.setAttribute('aria-expanded',String(!o))});
+}
+function authView(){
+  const reg=mode==='register';
+  return `<div class="auth"><section class="hero"><span class="tag">Nueva Vizcaya State University</span>
+  <div><h1>CITE Club<br>Management System</h1><p>College of Information Technology Education. Join organizations, track members and keep up with events. A leading university in education, innovation, and sustainable development.</p></div>
+  <p class="meta" style="color:inherit;opacity:.85">Quezon St., Bayombong, Nueva Vizcaya<br>Region II – Cagayan Valley · (078) 392-1111<br>Data is stored in this browser only.</p></section>
+  <section class="formwrap"><div class="form"><h2>${reg?'Create your account':'Welcome back'}</h2>
+  <div class="tabs" role="group" aria-label="Account"><button data-m="login" aria-pressed="${!reg}">Log in</button><button data-m="register" aria-pressed="${reg}">Register</button></div>
+  <form id="af" novalidate>${reg?`
+  <label for="name">Full name</label><input id="name" autocomplete="name" required>
+  <div class="row2"><div><label for="sid">Student ID</label><input id="sid" placeholder="2023-00123" required></div>
+  <div><label for="year">Year level</label><select id="year">${[1,2,3,4].map(y=>`<option>${y}</option>`).join('')}</select></div></div>
+  <label for="course">Course</label><select id="course">${COURSES.map(c=>`<option>${c}</option>`).join('')}</select>`:''}
+  <label for="email">Email</label><input id="email" type="email" autocomplete="email" required>
+  <label for="pw">Password</label><input id="pw" type="password" autocomplete="${reg?'new-password':'current-password'}" required>
+  ${reg?`<label for="pw2">Confirm password</label><input id="pw2" type="password" autocomplete="new-password" required>
+  `:''}
+  <div class="err" id="err" role="alert">${esc(msg)}</div>
+  <button class="btn" style="width:100%;margin-top:6px">${reg?'Create account':'Log in'}</button></form>
+  ${reg?'':'<p class="hint">Demo admin: admin@cite.edu / admin123</p>'}</div></section></div>`;
+}
+function bindAuth(){
+  document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m;msg='';render()});
+  $('#af').onsubmit=async e=>{
+    e.preventDefault();const v=id=>($('#'+id)?.value||'').trim();
+    const fail=t=>{msg=t;$('#err').textContent=t};
+    const email=v('email').toLowerCase(),pw=$('#pw').value;
+    if(!/^\S+@\S+\.\S+$/.test(email))return fail('Enter a valid email address.');
+    if(mode==='login'){
+      const u=db.users.find(x=>x.email===email);
+      if(!u||u.pw!==await hash(pw))return fail('Email or password is incorrect.');
+      return enter(u);
+    }
+    if(!v('name')||!v('sid'))return fail('Enter your full name and student ID.');
+    if(pw.length<6)return fail('Password must be at least 6 characters.');
+    if(pw!==$('#pw2').value)return fail('Passwords do not match.');
+    if(db.users.some(x=>x.email===email))return fail('That email is already registered. Log in instead.');
+    if(db.users.some(x=>x.sid.toLowerCase()===v('sid').toLowerCase()))return fail('That student ID is already registered.');
+    
+    const u={id:uid(),sid:v('sid'),name:v('name'),email,course:v('course'),year:v('year'),role:'student',pw:await hash(pw)};
+    db.users.push(u);save();enter(u);
+  };
+}
+function enter(u){me=u;lsSet(S,u.id);tab='home';msg='';render();toast('Logged in as '+u.name)}
+
+function clubCard(c){
+  const m=mem_(me.id,c.id);
+  const st=m?`<span class="pill ${m.status==='approved'?'ok':'wait'}">${m.status==='approved'?'Member':'Request pending'}</span>`:'';
+  const btn=m?`<button class="btn bad sm" data-leave="${c.id}">${m.status==='approved'?'Leave club':'Cancel request'}</button>`:`<button class="btn sm" data-join="${c.id}">Request to join</button>`;
+  return `<article class="card"><h3>${esc(c.name)}</h3><p>${esc(c.desc)}</p><div class="meta">Adviser: ${esc(c.adviser)} · ${count(c.id)} members</div><div style="display:flex;gap:8px;align-items:center;justify-content:space-between">${st}${btn}</div></article>`;
+}
+function eventCard(e,adm){
+  const c=club(e.cid),going=e.rsvp.includes(me.id);
+  return `<article class="card"><h3>${esc(e.title)}</h3><div class="meta">${esc(c?.name||'')} · ${fmt(e.date)} · ${esc(e.place)}</div><div class="meta">${e.rsvp.length} going</div>
+  <div style="display:flex;gap:8px">${adm?`<button class="btn bad sm" data-delev="${e.id}">Remove event</button>`:`<button class="btn ${going?'alt':''} sm" data-rsvp="${e.id}">${going?'Cancel RSVP':'RSVP'}</button>`}</div></article>`;
+}
+function page(){
+  const adm=me.role==='admin',myM=db.members.filter(m=>m.uid===me.id);
+  const approved=myM.filter(m=>m.status==='approved');
+  if(adm){
+    const pend=db.members.filter(m=>m.status==='pending').length;
+    if(tab==='home')return `<h2>Overview</h2><p class="sub">Club activity across the college.</p>
+    <div class="stats"><div class="stat"><b>${db.clubs.length}</b>Clubs</div><div class="stat"><b>${db.users.filter(u=>u.role==='student').length}</b>Students registered</div><div class="stat"><b>${db.members.filter(m=>m.status==='approved').length}</b>Active memberships</div><div class="stat"><b>${pend}</b>Requests waiting</div></div>
+    ${pend?`<div class="panel">You have ${pend} membership request${pend>1?'s':''} to review. <button class="btn sm" data-t2="members">Review requests</button></div>`:'<div class="empty">No pending requests. New join requests will appear under Members.</div>'}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px;gap:10px;flex-wrap:wrap"><h3>Upcoming events</h3><button class="btn sm" data-t2="events">+ Add event</button></div>
+    <div class="grid">${db.events.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>eventCard(e,true)).join('')||'<div class="empty">No upcoming events. Add one under Events.</div>'}</div>`;
+    if(tab==='clubs')return `<h2>Clubs</h2><p class="sub">Create and manage CITE organizations.</p>
+    <form class="panel" id="newclub"><h3 style="margin-bottom:4px">Add a new club</h3><div class="row2"><div><label for="cn">Club name</label><input id="cn" required></div><div><label for="ca">Adviser</label><input id="ca" required></div></div>
+    <label for="cd">Description</label><textarea id="cd" rows="2" required></textarea><div style="margin-top:12px"><button class="btn">+ Add club</button></div></form>
+    <div class="grid">${db.clubs.map(c=>`<article class="card"><h3>${esc(c.name)}</h3><p>${esc(c.desc)}</p><div class="meta">Adviser: ${esc(c.adviser)} · ${count(c.id)} members</div><button class="btn bad sm" data-delclub="${c.id}">Remove club</button></article>`).join('')||'<div class="empty">No clubs yet. Create the first one above.</div>'}</div>`;
+    if(tab==='members'){
+      const rows=db.members.filter(m=>user(m.uid)&&club(m.cid)).sort((a,b)=>(a.status==='pending'?0:1)-(b.status==='pending'?0:1));
+      return `<h2>Members</h2><p class="sub">Approve requests and manage rosters.</p>${rows.length?`<div class="tablewrap"><table><tr><th>Student</th><th>ID</th><th>Course</th><th>Club</th><th>Status</th><th></th></tr>${rows.map(m=>{const u=user(m.uid);return `<tr><td>${esc(u.name)}</td><td>${esc(u.sid)}</td><td>${esc(u.course+' '+u.year)}</td><td>${esc(club(m.cid).name)}</td><td><span class="pill ${m.status==='approved'?'ok':'wait'}">${m.status}</span></td><td>${m.status==='pending'?`<button class="btn sm" data-ap="${m.uid}|${m.cid}">Approve</button> `:''}<button class="btn bad sm" data-rm="${m.uid}|${m.cid}">${m.status==='pending'?'Reject':'Remove'}</button></td></tr>`}).join('')}</table></div>`:'<div class="empty">No membership requests yet. They appear here when students ask to join a club.</div>'}`;
+    }
+    if(tab==='events')return `<h2>Events</h2><p class="sub">Schedule activities for your clubs.</p>
+    <form class="panel" id="newev"><div class="row2"><div><label for="et">Event title</label><input id="et" required></div><div><label for="ec">Club</label><select id="ec">${db.clubs.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div></div>
+    <div class="row2"><div><label for="ed">Date</label><input id="ed" type="date" required></div><div><label for="ep">Venue</label><input id="ep" required></div></div><div style="margin-top:12px"><button class="btn">Add event</button></div></form>
+    <div class="grid">${db.events.map(e=>eventCard(e,true)).join('')||'<div class="empty">No events scheduled.</div>'}</div>`;
+  }
+  if(tab==='home')return `<h2>Hi, ${esc(me.name.split(' ')[0])}</h2><p class="sub">${esc(me.course)} · Year ${esc(me.year)} · ID ${esc(me.sid)}</p>
+  <div class="stats"><div class="stat"><b>${approved.length}</b>Clubs joined</div><div class="stat"><b>${myM.length-approved.length}</b>Requests pending</div><div class="stat"><b>${db.events.filter(e=>e.rsvp.includes(me.id)).length}</b>Events you're going to</div></div>
+  <h3 style="margin-bottom:12px">Upcoming events</h3><div class="grid">${db.events.slice().sort((a,b)=>a.date.localeCompare(b.date)).slice(0,4).map(e=>eventCard(e)).join('')||'<div class="empty">No events yet.</div>'}</div>`;
+  if(tab==='clubs'){
+    const list=db.clubs.filter(c=>(c.name+c.desc).toLowerCase().includes(q.toLowerCase()));
+    return `<h2>Browse clubs</h2><p class="sub">Request to join. An admin approves your membership.</p>
+    <div class="bar"><input id="q" placeholder="Search clubs" aria-label="Search clubs" value="${esc(q)}"></div>
+    <div class="grid">${list.map(clubCard).join('')||'<div class="empty">No clubs match your search. Try a different word.</div>'}</div>`;
+  }
+  if(tab==='mine')return `<h2>My clubs</h2><p class="sub">Clubs you belong to or have asked to join.</p><div class="grid">${myM.map(m=>club(m.cid)).filter(Boolean).map(clubCard).join('')||'<div class="empty">You have not joined any clubs yet. Open Browse clubs to find one.</div>'}</div>`;
+  if(tab==='events')return `<h2>Events</h2><p class="sub">RSVP so organizers can plan.</p><div class="grid">${db.events.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>eventCard(e)).join('')||'<div class="empty">No events yet.</div>'}</div>`;
+  if(tab==='profile')return `<h2>Profile</h2><p class="sub">Your account details.</p><div class="panel"><p><b>${esc(me.name)}</b></p><p class="meta">Student ID: ${esc(me.sid)}<br>Email: ${esc(me.email)}<br>Program: ${esc(me.course)}, Year ${esc(me.year)}</p></div>`;
+}
+function bindPage(){
+  const on=(a,f)=>document.querySelectorAll(`[data-${a}]`).forEach(b=>b.onclick=()=>f(b.dataset[a]));
+  const done=t=>{save();render();toast(t)};
+  on('t2',t=>{tab=t;render()});
+  on('join',c=>{db.members.push({uid:me.id,cid:c,status:'pending'});done('Request sent to club admins')});
+  on('leave',c=>{db.members=db.members.filter(m=>!(m.uid===me.id&&m.cid===c));done('Membership removed')});
+  on('rsvp',id=>{const e=db.events.find(x=>x.id===id);e.rsvp=e.rsvp.includes(me.id)?e.rsvp.filter(x=>x!==me.id):[...e.rsvp,me.id];done('RSVP updated')});
+  on('ap',k=>{const[u,c]=k.split('|');mem_(u,c).status='approved';done('Member approved')});
+  on('rm',k=>{const[u,c]=k.split('|');db.members=db.members.filter(m=>!(m.uid===u&&m.cid===c));done('Removed')});
+  on('delclub',id=>{if(!confirm('Delete this club and its events and memberships?'))return;db.clubs=db.clubs.filter(c=>c.id!==id);db.members=db.members.filter(m=>m.cid!==id);db.events=db.events.filter(e=>e.cid!==id);done('Club deleted')});
+  on('delev',id=>{db.events=db.events.filter(e=>e.id!==id);done('Event deleted')});
+  const qi=$('#q');if(qi)qi.oninput=()=>{q=qi.value;render();const n=$('#q');n.focus();n.setSelectionRange(q.length,q.length)};
+  const nc=$('#newclub');if(nc)nc.onsubmit=e=>{e.preventDefault();db.clubs.push({id:uid(),name:$('#cn').value.trim(),adviser:$('#ca').value.trim(),desc:$('#cd').value.trim()});done('Club created')};
+  const ne=$('#newev');if(ne)ne.onsubmit=e=>{e.preventDefault();db.events.push({id:uid(),cid:$('#ec').value,title:$('#et').value.trim(),date:$('#ed').value,place:$('#ep').value.trim(),rsvp:[]});done('Event added')};
+}
+const NEWCLUBS=[
+{id:'c-css',name:'CSS (Computer Science Society)',desc:'Organization for computer science students: programming, algorithms, research and academic activities.',adviser:'To be assigned'},
+{id:'c-fits',name:'FITS (Future Information Technologists Society)',desc:'Organization for IT students: tech workshops, networking, systems projects and campus IT events.',adviser:'To be assigned'},
+{id:'c-aims',name:'AIMS (Association of Information Management Students)',desc:'Organization for information systems and management students: databases, business systems and professional development.',adviser:'To be assigned'}];
+function addClubs(){db.added=db.added||[];let ch=false;NEWCLUBS.forEach(n=>{if(db.added.includes(n.id))return;db.added.push(n.id);ch=true;const e=db.clubs.find(c=>c.id===n.id);if(!e)db.clubs.push(n);else e.name=n.name});if(ch)save()}
+(async()=>{await load();addClubs();const s=lsGet(S);me=s&&user(s)||null;render()})();
+</script>
+</body>
+</html>
